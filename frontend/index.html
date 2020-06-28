@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE-Example</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>This is an Server-Side-Event Example</h1>
+
+<section class="grid">
+    <p>onmessage event:</p>
+    <p id="onmessage">this is the data received by onmessage event.</p>
+
+    <p>time event:</p>
+    <p id="time">this is the data received by time event.</p>
+
+    <p>setReconnect event:</p>
+    <p id="retry">this is the data received by setInterval event.</p>
+</section>
+
+
+</body>
+</html>
+
+<script type="text/javascript">
+    //check for browser support, Internet Explorer for example will not work
+    if (typeof (EventSource) !== "undefined") {
+
+        //create an object, passing it the name and location of the server side script
+        const eSource = new EventSource("http://localhost:8890/sse_example.php");
+
+        //detect message receipt
+        eSource.onmessage = function (event) {
+            document.getElementById("onmessage").innerHTML = event.data;
+        };
+
+        //receive special event defined in server push data and receive data in json format
+        eSource.addEventListener("time", function (event) {
+            const data = JSON.parse(event.data);
+            document.getElementById("time").innerHTML = data.text + data.time;
+        });
+
+        //receive special event defined in server push data sets the reconnection time
+        eSource.addEventListener("setReconnect", function (event) {
+            document.getElementById("retry").innerHTML = event.data;
+        });
+
+    } else {
+        document.getElementById("serverData").innerHTML = "Whoops! Your browser doesn't receive server-sent events.";
+    }
+
+</script>

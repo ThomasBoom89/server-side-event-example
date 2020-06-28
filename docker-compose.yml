@@ -1,0 +1,27 @@
+version: '3'
+services:
+  backend:
+    container_name: sse-backend
+    image: php:apache
+    restart: always
+    ports:
+      - 8890:80
+    volumes:
+      - ./backend/:/var/www/html/
+    networks:
+      - sse-example
+
+  frontend:
+    container_name: sse-frontend
+    image: httpd
+    restart: always
+    ports:
+      - 8891:80
+    volumes:
+      - ./frontend/:/usr/local/apache2/htdocs/
+    networks:
+      - sse-example
+
+networks:
+  sse-example:
+
